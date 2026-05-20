@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HeroesLeague Analysis Portal</title>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0d1117;
+      --bg2: #161b22;
+      --bg3: #21262d;
+      --border: #30363d;
+      --accent: #f0b429;
+      --accent2: #e8913a;
+      --text: #e6edf3;
+      --text2: #8b949e;
+      --text3: #6e7681;
+      --blue: #58a6ff;
+      --green: #3fb950;
+      --purple: #bc8cff;
+      --red: #f85149;
+      --sidebar-w: 280px;
+      --nav-h: 60px;
+      --radius: 10px;
+      --transition: 0.2s ease;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Noto Sans JP', 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.7;
+    }
+
+    /* ── Navbar ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      height: var(--nav-h);
+      background: rgba(13,17,23,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 16px;
+      padding: 0 24px;
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none;
+      font-size: 17px; font-weight: 700; color: var(--text);
+      letter-spacing: -0.3px;
+    }
+    .nav-logo .trophy { font-size: 20px; }
+    .nav-logo span { color: var(--accent); }
+    .nav-spacer { flex: 1; }
+    .nav-credit {
+      font-size: 12px; color: var(--text3);
+    }
+    .nav-credit a {
+      color: var(--text2); text-decoration: none;
+      transition: color var(--transition);
+    }
+    .nav-credit a:hover { color: var(--accent); }
+    #menu-btn {
+      display: none; background: none; border: none;
+      color: var(--text2); cursor: pointer; font-size: 22px; padding: 4px;
+    }
+
+    /* ── Layout ── */
+    .layout {
+      display: flex;
+      padding-top: var(--nav-h);
+      min-height: 100vh;
+    }
+
+    /* ── Sidebar ── */
+    aside {
+      width: var(--sidebar-w);
+      flex-shrink: 0;
+      position: fixed;
+      top: var(--nav-h); bottom: 0; left: 0;
+      overflow-y: auto;
+      background: var(--bg2);
+      border-right: 1px solid var(--border);
+      padding: 20px 0 40px;
+      transition: transform var(--transition);
+      z-index: 50;
+    }
+    aside::-webkit-scrollbar { width: 4px; }
+    aside::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    .sidebar-section {
+      padding: 0 12px 8px;
+    }
+    .sidebar-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 1.2px;
+      color: var(--text3); text-transform: uppercase;
+      padding: 16px 12px 6px;
+    }
+    .sidebar-link {
+      display: flex; align-items: center; gap: 9px;
+      padding: 8px 12px; border-radius: var(--radius);
+      cursor: pointer; font-size: 13px; color: var(--text2);
+      transition: all var(--transition);
+      border: none; background: none; width: 100%; text-align: left;
+      line-height: 1.4;
+    }
+    .sidebar-link .icon { font-size: 14px; width: 18px; flex-shrink: 0; }
+    .sidebar-link:hover { background: var(--bg3); color: var(--text); }
+    .sidebar-link.active {
+      background: rgba(240,180,41,0.12);
+      color: var(--accent);
+      font-weight: 500;
+    }
+    .sidebar-divider {
+      height: 1px; background: var(--border);
+      margin: 8px 16px;
+    }
+
+    /* ── Main ── */
+    main {
+      margin-left: var(--sidebar-w);
+      flex: 1;
+      min-width: 0;
+    }
+
+    /* ── Home ── */
+    #home-view {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 48px 40px 80px;
+    }
+    .hero {
+      text-align: center;
+      padding: 48px 0 56px;
+    }
+    .hero-badge {
+      display: inline-block;
+      background: rgba(240,180,41,0.12);
+      color: var(--accent);
+      font-size: 12px; font-weight: 700; letter-spacing: 1px;
+      padding: 5px 14px; border-radius: 20px;
+      border: 1px solid rgba(240,180,41,0.3);
+      margin-bottom: 20px;
+      text-transform: uppercase;
+    }
+    .hero h1 {
+      font-size: 42px; font-weight: 700; line-height: 1.2;
+      letter-spacing: -1px;
+      margin-bottom: 16px;
+    }
+    .hero h1 span { color: var(--accent); }
+    .hero p {
+      font-size: 16px; color: var(--text2);
+      max-width: 540px; margin: 0 auto 32px;
+    }
+    .hero-meta {
+      display: flex; gap: 24px; justify-content: center;
+      flex-wrap: wrap;
+    }
+    .hero-stat {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 13px; color: var(--text3);
+    }
+    .hero-stat .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent);
+    }
+
+    .section-title {
+      font-size: 20px; font-weight: 700; margin-bottom: 20px;
+      padding-bottom: 10px; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .section-title .badge {
+      font-size: 11px; font-weight: 600; padding: 2px 9px;
+      border-radius: 12px; background: var(--bg3);
+      color: var(--text2); letter-spacing: 0.5px;
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+      margin-bottom: 48px;
+    }
+    .card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      cursor: pointer;
+      transition: all var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: var(--card-color, var(--accent));
+      opacity: 0; transition: opacity var(--transition);
+    }
+    .card:hover {
+      border-color: var(--card-color, var(--accent));
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+    }
+    .card:hover::before { opacity: 1; }
+    .card-icon { font-size: 28px; margin-bottom: 12px; }
+    .card-title {
+      font-size: 15px; font-weight: 700; margin-bottom: 6px;
+      color: var(--text);
+    }
+    .card-desc {
+      font-size: 12px; color: var(--text2); line-height: 1.5;
+      margin-bottom: 14px;
+    }
+    .card-tags {
+      display: flex; flex-wrap: wrap; gap: 6px;
+    }
+    .tag {
+      font-size: 10px; padding: 2px 8px; border-radius: 10px;
+      background: var(--bg3); color: var(--text3);
+      border: 1px solid var(--border);
+    }
+    .card-arrow {
+      position: absolute; bottom: 20px; right: 20px;
+      font-size: 16px; color: var(--text3);
+      transition: all var(--transition);
+    }
+    .card:hover .card-arrow { color: var(--card-color, var(--accent)); transform: translateX(3px); }
+
+    /* ── Reader ── */
+    #reader-view {
+      display: none;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 40px 40px 80px;
+    }
+    .reader-header {
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 32px; padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+    .back-btn {
+      display: flex; align-items: center; gap: 6px;
+      background: var(--bg2); border: 1px solid var(--border);
+      color: var(--text2); padding: 7px 14px; border-radius: 8px;
+      cursor: pointer; font-size: 13px;
+      transition: all var(--transition);
+    }
+    .back-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .reader-title-area { flex: 1; }
+    .reader-title {
+      font-size: 22px; font-weight: 700; color: var(--text);
+    }
+    .reader-subtitle { font-size: 13px; color: var(--text3); margin-top: 3px; }
+
+    /* ── Markdown ── */
+    .md-body h1 { font-size: 28px; font-weight: 700; margin: 0 0 24px; color: var(--text); line-height: 1.3; }
+    .md-body h2 {
+      font-size: 20px; font-weight: 700; margin: 40px 0 16px;
+      padding-bottom: 8px; border-bottom: 1px solid var(--border);
+      color: var(--text); display: flex; align-items: center; gap: 8px;
+    }
+    .md-body h3 { font-size: 16px; font-weight: 700; margin: 28px 0 12px; color: var(--accent); }
+    .md-body h4 { font-size: 14px; font-weight: 700; margin: 20px 0 8px; color: var(--text2); }
+    .md-body p { margin: 0 0 14px; color: var(--text2); font-size: 14px; }
+    .md-body a { color: var(--blue); text-decoration: none; }
+    .md-body a:hover { text-decoration: underline; }
+    .md-body strong { color: var(--text); font-weight: 600; }
+    .md-body em { color: var(--text2); }
+    .md-body ul, .md-body ol { padding-left: 22px; margin: 0 0 14px; }
+    .md-body li { color: var(--text2); font-size: 14px; margin-bottom: 6px; }
+    .md-body li strong { color: var(--text); }
+    .md-body blockquote {
+      border-left: 3px solid var(--accent);
+      background: rgba(240,180,41,0.06);
+      padding: 12px 18px; margin: 16px 0; border-radius: 0 6px 6px 0;
+    }
+    .md-body blockquote p { color: var(--text2); margin: 0; }
+    .md-body code {
+      background: var(--bg3); color: var(--purple);
+      padding: 2px 7px; border-radius: 4px;
+      font-size: 13px; font-family: 'SF Mono', 'Fira Code', monospace;
+      border: 1px solid var(--border);
+    }
+    .md-body pre {
+      background: var(--bg3); border: 1px solid var(--border);
+      border-radius: 8px; padding: 18px 20px; margin: 16px 0;
+      overflow-x: auto;
+    }
+    .md-body pre code {
+      background: none; border: none; padding: 0;
+      color: var(--text2); font-size: 13px;
+    }
+    .md-body table {
+      width: 100%; border-collapse: collapse; margin: 16px 0;
+      font-size: 13px;
+    }
+    .md-body th {
+      background: var(--bg3); color: var(--text);
+      padding: 10px 14px; text-align: left;
+      border: 1px solid var(--border); font-weight: 600;
+    }
+    .md-body td {
+      padding: 9px 14px; border: 1px solid var(--border);
+      color: var(--text2); vertical-align: top;
+    }
+    .md-body tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+    .md-body tr:hover td { background: rgba(255,255,255,0.04); }
+    .md-body hr { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
+
+    /* ── Loading ── */
+    .loading {
+      display: flex; align-items: center; justify-content: center;
+      gap: 12px; padding: 60px; color: var(--text3); font-size: 14px;
+    }
+    .spinner {
+      width: 20px; height: 20px; border: 2px solid var(--border);
+      border-top-color: var(--accent); border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 40px;
+      text-align: center;
+      color: var(--text3); font-size: 12px;
+      line-height: 1.8;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      :root { --sidebar-w: 260px; }
+      aside { transform: translateX(-100%); }
+      aside.open { transform: translateX(0); box-shadow: 8px 0 24px rgba(0,0,0,0.5); }
+      main { margin-left: 0; }
+      #menu-btn { display: block; }
+      #home-view { padding: 24px 20px 60px; }
+      #reader-view { padding: 24px 20px 60px; }
+      .hero h1 { font-size: 28px; }
+      .cards-grid { grid-template-columns: 1fr; }
+    }
+    .overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.5); z-index: 40;
+    }
+    .overlay.show { display: block; }
+  </style>
+</head>
+<body>
+
+<!-- Overlay for mobile sidebar -->
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+<!-- Navbar -->
+<nav>
+  <button id="menu-btn" onclick="toggleSidebar()">☰</button>
+  <a class="nav-logo" href="#" onclick="showHome(); return false;">
+    <span class="trophy">🏆</span>
+    <span>HeroesLeague</span> Analysis
+  </a>
+  <div class="nav-spacer"></div>
+  <div class="nav-credit">
+    Crafted by <a href="https://www.unryu.org" target="_blank" rel="noopener">栗原一貴</a>
+    &nbsp;·&nbsp; Powered by <a href="https://protopedia.net/prototype/8454" target="_blank" rel="noopener">protopedia-mcp</a>
+  </div>
+</nav>
+
+<!-- Layout -->
+<div class="layout">
+
+  <!-- Sidebar -->
+  <aside id="sidebar">
+    <div class="sidebar-label">メニュー</div>
+    <div class="sidebar-section">
+      <button class="sidebar-link active" id="nav-home" onclick="showHome()">
+        <span class="icon">🏠</span> ホーム
+      </button>
+    </div>
+
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-label">賞別 傾向と対策</div>
+    <div class="sidebar-section">
+      <button class="sidebar-link" onclick="loadDoc('award-league.md', 'リーグ賞', this)">
+        <span class="icon">👑</span> リーグ賞
+      </button>
+      <button class="sidebar-link" onclick="loadDoc('award-puchi-hero.md', 'プチヒーロー賞', this)">
+        <span class="icon">📡</span> プチヒーロー賞
+      </button>
+      <button class="sidebar-link" onclick="loadDoc('award-community-supporter.md', 'コミュニティサポーター賞', this)">
+        <span class="icon">🤝</span> コミュニティサポーター賞
+      </button>
+      <button class="sidebar-link" onclick="loadDoc('award-my-hero.md', 'Myヒーロー賞', this)">
+        <span class="icon">⭐</span> Myヒーロー賞
+      </button>
+      <button class="sidebar-link" onclick="loadDoc('award-media-supporter.md', 'メディアサポーター賞', this)">
+        <span class="icon">📰</span> メディアサポーター賞
+      </button>
+      <button class="sidebar-link" onclick="loadDoc('award-technical-supporter.md', 'テクニカルサポーター賞', this)">
+        <span class="icon">🔧</span> テクニカルサポーター賞
+      </button>
+    </div>
+
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-label">HeroesBingo 分析</div>
+    <div class="sidebar-section">
+      <button class="sidebar-link" onclick="loadDoc('HeroesBingo-analysis.md', 'HeroesBingo 分析', this)">
+        <span class="icon">🎯</span> HeroesBingo 分析
+      </button>
+      <button class="sidebar-link" onclick="loadDoc('HeroesBingo-analysis-for-kurihara.md', 'HeroesBingo 分析（栗原向け）', this)">
+        <span class="icon">🎯</span> HeroesBingo 分析（栗原向け）
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main>
+
+    <!-- Home View -->
+    <div id="home-view">
+      <div class="hero">
+        <div class="hero-badge">2026年向け分析レポート</div>
+        <h1>HeroesLeague<br><span>Analysis Portal</span></h1>
+        <p>ITものづくりコンテスト「ヒーローズ・リーグ」の過去受賞作品を分析し、傾向と対策をまとめたポータルサイトです。</p>
+        <div class="hero-meta">
+          <div class="hero-stat"><div class="dot"></div>2021〜2025年 5年分のデータ</div>
+          <div class="hero-stat"><div class="dot"></div>全賞カテゴリーを網羅</div>
+          <div class="hero-stat"><div class="dot"></div>protopedia-mcp による分析</div>
+        </div>
+      </div>
+
+      <div class="section-title">
+        賞別 傾向と対策 <span class="badge">6カテゴリー</span>
+      </div>
+      <div class="cards-grid">
+        <div class="card" style="--card-color:#f0b429" onclick="loadDoc('award-league.md','リーグ賞')">
+          <div class="card-icon">👑</div>
+          <div class="card-title">リーグ賞</div>
+          <div class="card-desc">MAヒーロー・オンラインヒーロー・ルーキーヒーロー・あらびきヒーローの4賞を徹底分析。</div>
+          <div class="card-tags">
+            <span class="tag">MAヒーロー</span>
+            <span class="tag">オンライン</span>
+            <span class="tag">ルーキー</span>
+            <span class="tag">あらびき</span>
+          </div>
+          <span class="card-arrow">→</span>
+        </div>
+        <div class="card" style="--card-color:#58a6ff" onclick="loadDoc('award-puchi-hero.md','プチヒーロー賞')">
+          <div class="card-icon">📡</div>
+          <div class="card-title">プチヒーロー賞</div>
+          <div class="card-desc">ドコモつなぐヒーロー賞。新しいつながりを生み出す作品を対象。副賞3万円＋決勝進出権。</div>
+          <div class="card-tags">
+            <span class="tag">NTTドコモ</span>
+            <span class="tag">つながり</span>
+            <span class="tag">地域</span>
+          </div>
+          <span class="card-arrow">→</span>
+        </div>
+        <div class="card" style="--card-color:#3fb950" onclick="loadDoc('award-community-supporter.md','コミュニティサポーター賞')">
+          <div class="card-icon">🤝</div>
+          <div class="card-title">コミュニティサポーター賞</div>
+          <div class="card-desc">XUI・IoT・ヘボコン・MAID・CIVICTECH など14コミュニティによる賞。決勝進出権付き。</div>
+          <div class="card-tags">
+            <span class="tag">XUI</span>
+            <span class="tag">IoT</span>
+            <span class="tag">MAID</span>
+            <span class="tag">CIVICTECH</span>
+            <span class="tag">14賞</span>
+          </div>
+          <span class="card-arrow">→</span>
+        </div>
+        <div class="card" style="--card-color:#bc8cff" onclick="loadDoc('award-my-hero.md','Myヒーロー賞')">
+          <div class="card-icon">⭐</div>
+          <div class="card-title">Myヒーロー賞</div>
+          <div class="card-desc">企業・個人スポンサーによる35賞。M5Stack・Spresense・ネコ賞など独自テーマで選出。</div>
+          <div class="card-tags">
+            <span class="tag">M5Stack</span>
+            <span class="tag">Spresense</span>
+            <span class="tag">ネコ</span>
+            <span class="tag">35賞</span>
+          </div>
+          <span class="card-arrow">→</span>
+        </div>
+        <div class="card" style="--card-color:#e8913a" onclick="loadDoc('award-media-supporter.md','メディアサポーター賞')">
+          <div class="card-icon">📰</div>
+          <div class="card-title">メディアサポーター賞</div>
+          <div class="card-desc">インスタ部・あしたば・TECH PLAY・elchika など5媒体による賞。副賞は取材。</div>
+          <div class="card-tags">
+            <span class="tag">インスタ部</span>
+            <span class="tag">あしたば</span>
+            <span class="tag">TECH PLAY</span>
+            <span class="tag">取材</span>
+          </div>
+          <span class="card-arrow">→</span>
+        </div>
+        <div class="card" style="--card-color:#f85149" onclick="loadDoc('award-technical-supporter.md','テクニカルサポーター賞')">
+          <div class="card-icon">🔧</div>
+          <div class="card-title">テクニカルサポーター賞</div>
+          <div class="card-desc">ProtoPedia・A.I.VOICE・toio・LINE DC・スタックチャンなど14技術企業による賞。</div>
+          <div class="card-tags">
+            <span class="tag">ProtoPedia</span>
+            <span class="tag">toio</span>
+            <span class="tag">スタックチャン</span>
+            <span class="tag">14賞</span>
+          </div>
+          <span class="card-arrow">→</span>
+        </div>
+      </div>
+
+      <div class="section-title">
+        HeroesBingo 分析 <span class="badge">2ファイル</span>
+      </div>
+      <div class="cards-grid">
+        <div class="card" style="--card-color:#58a6ff" onclick="loadDoc('HeroesBingo-analysis.md','HeroesBingo 分析')">
+          <div class="card-icon">🎯</div>
+          <div class="card-title">HeroesBingo 分析</div>
+          <div class="card-desc">HeroesBingoの詳細な分析レポート。</div>
+          <div class="card-tags"><span class="tag">HeroesBingo</span></div>
+          <span class="card-arrow">→</span>
+        </div>
+        <div class="card" style="--card-color:#3fb950" onclick="loadDoc('HeroesBingo-analysis-for-kurihara.md','HeroesBingo 分析（栗原向け）')">
+          <div class="card-icon">🎯</div>
+          <div class="card-title">HeroesBingo 分析（栗原向け）</div>
+          <div class="card-desc">HeroesBingoの分析レポート（栗原一貴向けカスタマイズ版）。</div>
+          <div class="card-tags"><span class="tag">HeroesBingo</span><span class="tag">栗原向け</span></div>
+          <span class="card-arrow">→</span>
+        </div>
+      </div>
+
+      <footer>
+        <div>
+          <strong>HeroesLeague Analysis Portal</strong><br>
+          <a href="https://heroes-league.net/" target="_blank" rel="noopener">ヒーローズ・リーグ</a> の過去受賞作品を
+          <a href="https://protopedia.net/prototype/8454" target="_blank" rel="noopener">protopedia-mcp</a> で分析したレポート集<br>
+          <br>
+          Crafted by <a href="https://www.unryu.org" target="_blank" rel="noopener">栗原一貴</a>
+          &nbsp;·&nbsp;
+          <a href="https://github.com/qurihara/HeroesLeague-analysis" target="_blank" rel="noopener">GitHub</a>
+        </div>
+      </footer>
+    </div>
+
+    <!-- Reader View -->
+    <div id="reader-view">
+      <div class="reader-header">
+        <button class="back-btn" onclick="showHome()">← 戻る</button>
+        <div class="reader-title-area">
+          <div class="reader-title" id="reader-title"></div>
+          <div class="reader-subtitle" id="reader-subtitle"></div>
+        </div>
+      </div>
+      <div class="md-body" id="md-content">
+        <div class="loading"><div class="spinner"></div>読み込み中...</div>
+      </div>
+      <footer style="margin-top:40px;">
+        <a href="https://www.unryu.org" target="_blank" rel="noopener">栗原一貴</a> ·
+        <a href="https://github.com/qurihara/HeroesLeague-analysis" target="_blank" rel="noopener">GitHub</a>
+      </footer>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  // Sidebar
+  function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('overlay').classList.toggle('show');
+  }
+  function closeSidebar() {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('overlay').classList.remove('show');
+  }
+
+  // Navigation state
+  let currentBtn = document.getElementById('nav-home');
+
+  function setActive(btn) {
+    document.querySelectorAll('.sidebar-link').forEach(b => b.classList.remove('active'));
+    if (btn) { btn.classList.add('active'); currentBtn = btn; }
+  }
+
+  // Show home
+  function showHome(btn) {
+    document.getElementById('home-view').style.display = '';
+    document.getElementById('reader-view').style.display = 'none';
+    setActive(document.getElementById('nav-home'));
+    closeSidebar();
+    window.scrollTo(0, 0);
+    history.pushState({}, '', '#');
+  }
+
+  // Load and render markdown
+  async function loadDoc(file, title, btn) {
+    document.getElementById('home-view').style.display = 'none';
+    document.getElementById('reader-view').style.display = '';
+    document.getElementById('reader-title').textContent = title;
+    document.getElementById('reader-subtitle').textContent = file;
+    document.getElementById('md-content').innerHTML =
+      '<div class="loading"><div class="spinner"></div>読み込み中...</div>';
+    setActive(btn || null);
+    closeSidebar();
+    window.scrollTo(0, 0);
+    history.pushState({ file, title }, '', '#' + file.replace('.md',''));
+
+    try {
+      const res = await fetch(file);
+      if (!res.ok) throw new Error(res.status);
+      const text = await res.text();
+      document.getElementById('md-content').innerHTML = marked.parse(text);
+    } catch (e) {
+      document.getElementById('md-content').innerHTML =
+        `<p style="color:var(--red)">ファイルの読み込みに失敗しました: ${file}</p>`;
+    }
+  }
+
+  // Handle browser back/forward
+  window.addEventListener('popstate', () => {
+    const hash = location.hash.replace('#','');
+    if (!hash) showHome();
+  });
+
+  // Configure marked
+  marked.setOptions({ breaks: true, gfm: true });
+</script>
+</body>
+</html>
