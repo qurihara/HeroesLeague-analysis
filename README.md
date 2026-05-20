@@ -1,2 +1,2 @@
 # HeroesLeague-analysis
-protopedia-mcpを用いて、ITものづくりコンテストHeroesLeagueの多角的な分析を行う。
+[protopedia-mcp](https://protopedia.net/prototype/8454)を用いて、ITものづくりコンテストHeroesLeagueの多角的な分析を行う。
