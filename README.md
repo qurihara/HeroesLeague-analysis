@@ -1,6 +1,8 @@
 # HeroesLeague-analysis
 [protopedia-mcp](https://protopedia.net/prototype/8454)を用いて、ITものづくりコンテストHeroesLeagueの多角的な分析を行う。
 
+🌐 **ポータルサイト**: https://qurihara.github.io/HeroesLeague-analysis/
+
 ## 分析一覧
 
 ### 賞別 傾向と対策（2026年向け・2021〜2025年データ基づく）
