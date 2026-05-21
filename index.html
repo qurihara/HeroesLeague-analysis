@@ -59,6 +59,14 @@
     .nav-credit { font-size: 12px; color: var(--text3); }
     .nav-credit a { color: var(--text2); text-decoration: none; transition: color var(--transition); }
     .nav-credit a:hover { color: var(--accent); }
+    .nav-official {
+      display: flex; align-items: center; gap: 6px; flex-shrink: 0;
+      background: rgba(240,180,41,0.12); border: 1px solid rgba(240,180,41,0.35);
+      color: var(--accent); padding: 6px 14px; border-radius: 8px;
+      font-size: 12px; font-weight: 700; text-decoration: none; transition: all .2s;
+      white-space: nowrap;
+    }
+    .nav-official:hover { background: rgba(240,180,41,0.22); }
     #menu-btn {
       display: none; background: none; border: none;
       color: var(--text2); cursor: pointer; font-size: 22px; padding: 4px;
@@ -218,6 +226,9 @@
       #home-view { padding: 24px 20px 60px; }
       .hero h1 { font-size: 28px; }
       .cards-grid { grid-template-columns: 1fr; }
+      .nav-credit { display: none; }
+      .nav-official .nav-official-label { display: none; }
+      .nav-official { padding: 6px 10px; }
     }
     .overlay {
       display: none; position: fixed; inset: 0;
@@ -237,7 +248,7 @@
     <span>HeroesLeague</span> Analysis
   </a>
   <div class="nav-spacer"></div>
-  <a href="https://heroes-league.net/" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:6px;background:rgba(240,180,41,0.12);border:1px solid rgba(240,180,41,0.35);color:var(--accent);padding:6px 14px;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;transition:all .2s;" onmouseover="this.style.background='rgba(240,180,41,0.22)'" onmouseout="this.style.background='rgba(240,180,41,0.12)'">🏆 公式サイト</a>
+  <a class="nav-official" href="https://heroes-league.net/" target="_blank" rel="noopener">🏆<span class="nav-official-label"> 公式サイト</span></a>
   <div class="nav-credit">
     Crafted by <a href="https://www.unryu.org" target="_blank" rel="noopener">栗原一貴</a>
     &nbsp;·&nbsp; Powered by <a href="https://protopedia.net/prototype/8454" target="_blank" rel="noopener">protopedia-mcp</a>
