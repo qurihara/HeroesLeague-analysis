@@ -81,8 +81,9 @@ footer a:hover{text-decoration:underline;}
   const title    = (typeof PAGE_TITLE !== 'undefined') ? PAGE_TITLE : mdFile.replace('.md', '');
   const icon     = (typeof PAGE_ICON  !== 'undefined') ? PAGE_ICON  : '📄';
 
-  /* ── Build page structure ───────────────────���───────────────── */
-  document.body.innerHTML = `
+  /* ── Build page & fetch MD (runs after DOM is ready) ─────────── */
+  function init() {
+    document.body.innerHTML = `
 <nav>
   <a class="nav-back" href="index.html">← ポータル</a>
   <div class="nav-title"><span class="icon">${icon}</span>${title}</div>
@@ -102,23 +103,28 @@ footer a:hover{text-decoration:underline;}
   </footer>
 </div>`;
 
-  /* ── Load marked.js then fetch & render ─────────────────────── */
-  const markedScript = document.createElement('script');
-  markedScript.src = 'https://cdn.jsdelivr.net/npm/marked/marked.min.js';
-  markedScript.onload = async () => {
-    marked.setOptions({ breaks: true, gfm: true });
-    try {
-      const res  = await fetch(mdFile);
-      if (!res.ok) throw new Error(res.status);
-      const text = await res.text();
-      document.getElementById('md-area').innerHTML = marked.parse(text);
-      // update page title from H1
-      const h1 = document.querySelector('#md-area h1');
-      if (h1) document.title = h1.textContent + ' | HeroesLeague Analysis';
-    } catch (e) {
-      document.getElementById('md-area').innerHTML =
-        `<p style="color:#f85149">ファイルの読み込みに失敗しました: ${mdFile} (${e})</p>`;
-    }
-  };
-  document.head.appendChild(markedScript);
+    const markedScript = document.createElement('script');
+    markedScript.src = 'https://cdn.jsdelivr.net/npm/marked/marked.min.js';
+    markedScript.onload = async () => {
+      marked.setOptions({ breaks: true, gfm: true });
+      try {
+        const res  = await fetch(mdFile);
+        if (!res.ok) throw new Error(res.status);
+        const text = await res.text();
+        document.getElementById('md-area').innerHTML = marked.parse(text);
+        const h1 = document.querySelector('#md-area h1');
+        if (h1) document.title = h1.textContent + ' | HeroesLeague Analysis';
+      } catch (e) {
+        document.getElementById('md-area').innerHTML =
+          `<p style="color:#f85149">ファイルの読み込みに失敗しました: ${mdFile} (${e})</p>`;
+      }
+    };
+    document.head.appendChild(markedScript);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
 })();
