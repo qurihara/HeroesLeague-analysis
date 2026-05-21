@@ -75,6 +75,12 @@ footer a:hover{text-decoration:underline;}
   fontLink.href = 'https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700&display=swap';
   document.head.appendChild(fontLink);
 
+  const faviconLink = document.createElement('link');
+  faviconLink.rel = 'icon';
+  faviconLink.type = 'image/svg+xml';
+  faviconLink.href = 'favicon.svg';
+  document.head.appendChild(faviconLink);
+
   /* ── Determine MD file from current HTML filename ─────────────── */
   const htmlFile = location.pathname.split('/').pop() || 'index.html';
   const mdFile   = htmlFile.replace(/\.html?$/, '.md');
