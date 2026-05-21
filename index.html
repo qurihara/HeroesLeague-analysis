@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>HeroesLeague Analysis Portal</title>
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
@@ -29,9 +28,7 @@
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
-
     html { scroll-behavior: smooth; }
-
     body {
       font-family: 'Noto Sans JP', 'Inter', system-ui, sans-serif;
       background: var(--bg);
@@ -59,13 +56,8 @@
     .nav-logo .trophy { font-size: 20px; }
     .nav-logo span { color: var(--accent); }
     .nav-spacer { flex: 1; }
-    .nav-credit {
-      font-size: 12px; color: var(--text3);
-    }
-    .nav-credit a {
-      color: var(--text2); text-decoration: none;
-      transition: color var(--transition);
-    }
+    .nav-credit { font-size: 12px; color: var(--text3); }
+    .nav-credit a { color: var(--text2); text-decoration: none; transition: color var(--transition); }
     .nav-credit a:hover { color: var(--accent); }
     #menu-btn {
       display: none; background: none; border: none;
@@ -95,40 +87,26 @@
     aside::-webkit-scrollbar { width: 4px; }
     aside::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
-    .sidebar-section {
-      padding: 0 12px 8px;
-    }
     .sidebar-label {
       font-size: 10px; font-weight: 700; letter-spacing: 1.2px;
       color: var(--text3); text-transform: uppercase;
       padding: 16px 12px 6px;
     }
+    .sidebar-section { padding: 0 12px 8px; }
     .sidebar-link {
       display: flex; align-items: center; gap: 9px;
       padding: 8px 12px; border-radius: var(--radius);
-      cursor: pointer; font-size: 13px; color: var(--text2);
+      font-size: 13px; color: var(--text2);
       transition: all var(--transition);
-      border: none; background: none; width: 100%; text-align: left;
+      text-decoration: none;
       line-height: 1.4;
     }
     .sidebar-link .icon { font-size: 14px; width: 18px; flex-shrink: 0; }
     .sidebar-link:hover { background: var(--bg3); color: var(--text); }
-    .sidebar-link.active {
-      background: rgba(240,180,41,0.12);
-      color: var(--accent);
-      font-weight: 500;
-    }
-    .sidebar-divider {
-      height: 1px; background: var(--border);
-      margin: 8px 16px;
-    }
+    .sidebar-divider { height: 1px; background: var(--border); margin: 8px 16px; }
 
     /* ── Main ── */
-    main {
-      margin-left: var(--sidebar-w);
-      flex: 1;
-      min-width: 0;
-    }
+    main { margin-left: var(--sidebar-w); flex: 1; min-width: 0; }
 
     /* ── Home ── */
     #home-view {
@@ -152,26 +130,16 @@
     }
     .hero h1 {
       font-size: 42px; font-weight: 700; line-height: 1.2;
-      letter-spacing: -1px;
-      margin-bottom: 16px;
+      letter-spacing: -1px; margin-bottom: 16px;
     }
     .hero h1 span { color: var(--accent); }
     .hero p {
       font-size: 16px; color: var(--text2);
       max-width: 540px; margin: 0 auto 32px;
     }
-    .hero-meta {
-      display: flex; gap: 24px; justify-content: center;
-      flex-wrap: wrap;
-    }
-    .hero-stat {
-      display: flex; align-items: center; gap: 8px;
-      font-size: 13px; color: var(--text3);
-    }
-    .hero-stat .dot {
-      width: 6px; height: 6px; border-radius: 50%;
-      background: var(--accent);
-    }
+    .hero-meta { display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; }
+    .hero-stat { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text3); }
+    .hero-stat .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
 
     .section-title {
       font-size: 20px; font-weight: 700; margin-bottom: 20px;
@@ -195,10 +163,11 @@
       border: 1px solid var(--border);
       border-radius: var(--radius);
       padding: 24px;
-      cursor: pointer;
       transition: all var(--transition);
       position: relative;
       overflow: hidden;
+      text-decoration: none;
+      display: block;
     }
     .card::before {
       content: '';
@@ -213,17 +182,9 @@
     }
     .card:hover::before { opacity: 1; }
     .card-icon { font-size: 28px; margin-bottom: 12px; }
-    .card-title {
-      font-size: 15px; font-weight: 700; margin-bottom: 6px;
-      color: var(--text);
-    }
-    .card-desc {
-      font-size: 12px; color: var(--text2); line-height: 1.5;
-      margin-bottom: 14px;
-    }
-    .card-tags {
-      display: flex; flex-wrap: wrap; gap: 6px;
-    }
+    .card-title { font-size: 15px; font-weight: 700; margin-bottom: 6px; color: var(--text); }
+    .card-desc { font-size: 12px; color: var(--text2); line-height: 1.5; margin-bottom: 14px; }
+    .card-tags { display: flex; flex-wrap: wrap; gap: 6px; }
     .tag {
       font-size: 10px; padding: 2px 8px; border-radius: 10px;
       background: var(--bg3); color: var(--text3);
@@ -235,100 +196,6 @@
       transition: all var(--transition);
     }
     .card:hover .card-arrow { color: var(--card-color, var(--accent)); transform: translateX(3px); }
-
-    /* ── Reader ── */
-    #reader-view {
-      display: none;
-      max-width: 860px;
-      margin: 0 auto;
-      padding: 40px 40px 80px;
-    }
-    .reader-header {
-      display: flex; align-items: center; gap: 12px;
-      margin-bottom: 32px; padding-bottom: 20px;
-      border-bottom: 1px solid var(--border);
-      flex-wrap: wrap;
-    }
-    .back-btn {
-      display: flex; align-items: center; gap: 6px;
-      background: var(--bg2); border: 1px solid var(--border);
-      color: var(--text2); padding: 7px 14px; border-radius: 8px;
-      cursor: pointer; font-size: 13px;
-      transition: all var(--transition);
-    }
-    .back-btn:hover { border-color: var(--accent); color: var(--accent); }
-    .reader-title-area { flex: 1; }
-    .reader-title {
-      font-size: 22px; font-weight: 700; color: var(--text);
-    }
-    .reader-subtitle { font-size: 13px; color: var(--text3); margin-top: 3px; }
-
-    /* ── Markdown ── */
-    .md-body h1 { font-size: 28px; font-weight: 700; margin: 0 0 24px; color: var(--text); line-height: 1.3; }
-    .md-body h2 {
-      font-size: 20px; font-weight: 700; margin: 40px 0 16px;
-      padding-bottom: 8px; border-bottom: 1px solid var(--border);
-      color: var(--text); display: flex; align-items: center; gap: 8px;
-    }
-    .md-body h3 { font-size: 16px; font-weight: 700; margin: 28px 0 12px; color: var(--accent); }
-    .md-body h4 { font-size: 14px; font-weight: 700; margin: 20px 0 8px; color: var(--text2); }
-    .md-body p { margin: 0 0 14px; color: var(--text2); font-size: 14px; }
-    .md-body a { color: var(--blue); text-decoration: none; }
-    .md-body a:hover { text-decoration: underline; }
-    .md-body strong { color: var(--text); font-weight: 600; }
-    .md-body em { color: var(--text2); }
-    .md-body ul, .md-body ol { padding-left: 22px; margin: 0 0 14px; }
-    .md-body li { color: var(--text2); font-size: 14px; margin-bottom: 6px; }
-    .md-body li strong { color: var(--text); }
-    .md-body blockquote {
-      border-left: 3px solid var(--accent);
-      background: rgba(240,180,41,0.06);
-      padding: 12px 18px; margin: 16px 0; border-radius: 0 6px 6px 0;
-    }
-    .md-body blockquote p { color: var(--text2); margin: 0; }
-    .md-body code {
-      background: var(--bg3); color: var(--purple);
-      padding: 2px 7px; border-radius: 4px;
-      font-size: 13px; font-family: 'SF Mono', 'Fira Code', monospace;
-      border: 1px solid var(--border);
-    }
-    .md-body pre {
-      background: var(--bg3); border: 1px solid var(--border);
-      border-radius: 8px; padding: 18px 20px; margin: 16px 0;
-      overflow-x: auto;
-    }
-    .md-body pre code {
-      background: none; border: none; padding: 0;
-      color: var(--text2); font-size: 13px;
-    }
-    .md-body table {
-      width: 100%; border-collapse: collapse; margin: 16px 0;
-      font-size: 13px;
-    }
-    .md-body th {
-      background: var(--bg3); color: var(--text);
-      padding: 10px 14px; text-align: left;
-      border: 1px solid var(--border); font-weight: 600;
-    }
-    .md-body td {
-      padding: 9px 14px; border: 1px solid var(--border);
-      color: var(--text2); vertical-align: top;
-    }
-    .md-body tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
-    .md-body tr:hover td { background: rgba(255,255,255,0.04); }
-    .md-body hr { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
-
-    /* ── Loading ── */
-    .loading {
-      display: flex; align-items: center; justify-content: center;
-      gap: 12px; padding: 60px; color: var(--text3); font-size: 14px;
-    }
-    .spinner {
-      width: 20px; height: 20px; border: 2px solid var(--border);
-      border-top-color: var(--accent); border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
 
     /* ── Footer ── */
     footer {
@@ -349,7 +216,6 @@
       main { margin-left: 0; }
       #menu-btn { display: block; }
       #home-view { padding: 24px 20px 60px; }
-      #reader-view { padding: 24px 20px 60px; }
       .hero h1 { font-size: 28px; }
       .cards-grid { grid-template-columns: 1fr; }
     }
@@ -362,13 +228,11 @@
 </head>
 <body>
 
-<!-- Overlay for mobile sidebar -->
 <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
 
-<!-- Navbar -->
 <nav>
   <button id="menu-btn" onclick="toggleSidebar()">☰</button>
-  <a class="nav-logo" href="#" onclick="showHome(); return false;">
+  <a class="nav-logo" href="index.html">
     <span class="trophy">🏆</span>
     <span>HeroesLeague</span> Analysis
   </a>
@@ -379,57 +243,63 @@
   </div>
 </nav>
 
-<!-- Layout -->
 <div class="layout">
 
-  <!-- Sidebar -->
   <aside id="sidebar">
     <div class="sidebar-label">メニュー</div>
     <div class="sidebar-section">
-      <button class="sidebar-link active" id="nav-home" onclick="showHome()">
+      <a class="sidebar-link" href="index.html">
         <span class="icon">🏠</span> ホーム
-      </button>
+      </a>
     </div>
 
     <div class="sidebar-divider"></div>
     <div class="sidebar-label">賞別 傾向と対策</div>
     <div class="sidebar-section">
-      <button class="sidebar-link" onclick="loadDoc('award-league.md', 'リーグ賞', this)">
+      <a class="sidebar-link" href="award-league.html">
         <span class="icon">👑</span> リーグ賞
-      </button>
-      <button class="sidebar-link" onclick="loadDoc('award-puchi-hero.md', 'プチヒーロー賞', this)">
+      </a>
+      <a class="sidebar-link" href="award-puchi-hero.html">
         <span class="icon">📡</span> プチヒーロー賞
-      </button>
-      <button class="sidebar-link" onclick="loadDoc('award-community-supporter.md', 'コミュニティサポーター賞', this)">
+      </a>
+      <a class="sidebar-link" href="award-community-supporter.html">
         <span class="icon">🤝</span> コミュニティサポーター賞
-      </button>
-      <button class="sidebar-link" onclick="loadDoc('award-my-hero.md', 'Myヒーロー賞', this)">
+      </a>
+      <a class="sidebar-link" href="award-my-hero.html">
         <span class="icon">⭐</span> Myヒーロー賞
-      </button>
-      <button class="sidebar-link" onclick="loadDoc('award-media-supporter.md', 'メディアサポーター賞', this)">
+      </a>
+      <a class="sidebar-link" href="award-media-supporter.html">
         <span class="icon">📰</span> メディアサポーター賞
-      </button>
-      <button class="sidebar-link" onclick="loadDoc('award-technical-supporter.md', 'テクニカルサポーター賞', this)">
+      </a>
+      <a class="sidebar-link" href="award-technical-supporter.html">
         <span class="icon">🔧</span> テクニカルサポーター賞
-      </button>
+      </a>
     </div>
 
     <div class="sidebar-divider"></div>
     <div class="sidebar-label">HeroesBingo 分析</div>
     <div class="sidebar-section">
-      <button class="sidebar-link" onclick="loadDoc('HeroesBingo-analysis.md', 'HeroesBingo 分析', this)">
+      <a class="sidebar-link" href="HeroesBingo-analysis.html">
         <span class="icon">🎯</span> HeroesBingo 分析
-      </button>
-      <button class="sidebar-link" onclick="loadDoc('HeroesBingo-analysis-for-kurihara.md', 'HeroesBingo 分析（栗原向け）', this)">
-        <span class="icon">🎯</span> HeroesBingo 分析（栗原向け）
-      </button>
+      </a>
+      <a class="sidebar-link" href="HeroesBingo-analysis-for-kurihara.html">
+        <span class="icon">🎰</span> HeroesBingo 分析（栗原向け）
+      </a>
+    </div>
+
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-label">Protopedia 統計</div>
+    <div class="sidebar-section">
+      <a class="sidebar-link" href="protopedia-statistics.html">
+        <span class="icon">📊</span> 全数統計分析
+      </a>
+      <a class="sidebar-link" href="protopedia-slideshow.html">
+        <span class="icon">🎞️</span> スライドショー
+      </a>
     </div>
   </aside>
 
-  <!-- Main -->
   <main>
-
-    <!-- Home View -->
     <div id="home-view">
       <div class="hero">
         <div class="hero-badge">2026年向け分析レポート</div>
@@ -446,7 +316,7 @@
         賞別 傾向と対策 <span class="badge">6カテゴリー</span>
       </div>
       <div class="cards-grid">
-        <div class="card" style="--card-color:#f0b429" onclick="loadDoc('award-league.md','リーグ賞')">
+        <a class="card" href="award-league.html" style="--card-color:#f0b429">
           <div class="card-icon">👑</div>
           <div class="card-title">リーグ賞</div>
           <div class="card-desc">MAヒーロー・オンラインヒーロー・ルーキーヒーロー・あらびきヒーローの4賞を徹底分析。</div>
@@ -457,8 +327,8 @@
             <span class="tag">あらびき</span>
           </div>
           <span class="card-arrow">→</span>
-        </div>
-        <div class="card" style="--card-color:#58a6ff" onclick="loadDoc('award-puchi-hero.md','プチヒーロー賞')">
+        </a>
+        <a class="card" href="award-puchi-hero.html" style="--card-color:#58a6ff">
           <div class="card-icon">📡</div>
           <div class="card-title">プチヒーロー賞</div>
           <div class="card-desc">ドコモつなぐヒーロー賞。新しいつながりを生み出す作品を対象。副賞3万円＋決勝進出権。</div>
@@ -468,8 +338,8 @@
             <span class="tag">地域</span>
           </div>
           <span class="card-arrow">→</span>
-        </div>
-        <div class="card" style="--card-color:#3fb950" onclick="loadDoc('award-community-supporter.md','コミュニティサポーター賞')">
+        </a>
+        <a class="card" href="award-community-supporter.html" style="--card-color:#3fb950">
           <div class="card-icon">🤝</div>
           <div class="card-title">コミュニティサポーター賞</div>
           <div class="card-desc">XUI・IoT・ヘボコン・MAID・CIVICTECH など14コミュニティによる賞。決勝進出権付き。</div>
@@ -481,8 +351,8 @@
             <span class="tag">14賞</span>
           </div>
           <span class="card-arrow">→</span>
-        </div>
-        <div class="card" style="--card-color:#bc8cff" onclick="loadDoc('award-my-hero.md','Myヒーロー賞')">
+        </a>
+        <a class="card" href="award-my-hero.html" style="--card-color:#bc8cff">
           <div class="card-icon">⭐</div>
           <div class="card-title">Myヒーロー賞</div>
           <div class="card-desc">企業・個人スポンサーによる35賞。M5Stack・Spresense・ネコ賞など独自テーマで選出。</div>
@@ -493,8 +363,8 @@
             <span class="tag">35賞</span>
           </div>
           <span class="card-arrow">→</span>
-        </div>
-        <div class="card" style="--card-color:#e8913a" onclick="loadDoc('award-media-supporter.md','メディアサポーター賞')">
+        </a>
+        <a class="card" href="award-media-supporter.html" style="--card-color:#e8913a">
           <div class="card-icon">📰</div>
           <div class="card-title">メディアサポーター賞</div>
           <div class="card-desc">インスタ部・あしたば・TECH PLAY・elchika など5媒体による賞。副賞は取材。</div>
@@ -505,8 +375,8 @@
             <span class="tag">取材</span>
           </div>
           <span class="card-arrow">→</span>
-        </div>
-        <div class="card" style="--card-color:#f85149" onclick="loadDoc('award-technical-supporter.md','テクニカルサポーター賞')">
+        </a>
+        <a class="card" href="award-technical-supporter.html" style="--card-color:#f85149">
           <div class="card-icon">🔧</div>
           <div class="card-title">テクニカルサポーター賞</div>
           <div class="card-desc">ProtoPedia・A.I.VOICE・toio・LINE DC・スタックチャンなど14技術企業による賞。</div>
@@ -517,27 +387,47 @@
             <span class="tag">14賞</span>
           </div>
           <span class="card-arrow">→</span>
-        </div>
+        </a>
       </div>
 
       <div class="section-title">
         HeroesBingo 分析 <span class="badge">2ファイル</span>
       </div>
       <div class="cards-grid">
-        <div class="card" style="--card-color:#58a6ff" onclick="loadDoc('HeroesBingo-analysis.md','HeroesBingo 分析')">
+        <a class="card" href="HeroesBingo-analysis.html" style="--card-color:#58a6ff">
           <div class="card-icon">🎯</div>
           <div class="card-title">HeroesBingo 分析</div>
-          <div class="card-desc">HeroesBingoの詳細な分析レポート。</div>
-          <div class="card-tags"><span class="tag">HeroesBingo</span></div>
+          <div class="card-desc">5年分のビンゴ受賞傾向を分析。どんな作品がビンゴマスを開けるのか、データで迫る。</div>
+          <div class="card-tags"><span class="tag">HeroesBingo</span><span class="tag">傾向分析</span></div>
           <span class="card-arrow">→</span>
-        </div>
-        <div class="card" style="--card-color:#3fb950" onclick="loadDoc('HeroesBingo-analysis-for-kurihara.md','HeroesBingo 分析（栗原向け）')">
-          <div class="card-icon">🎯</div>
+        </a>
+        <a class="card" href="HeroesBingo-analysis-for-kurihara.html" style="--card-color:#3fb950">
+          <div class="card-icon">🎰</div>
           <div class="card-title">HeroesBingo 分析（栗原向け）</div>
-          <div class="card-desc">HeroesBingoの分析レポート（栗原一貴向けカスタマイズ版）。</div>
-          <div class="card-tags"><span class="tag">HeroesBingo</span><span class="tag">栗原向け</span></div>
+          <div class="card-desc">Bingo下手過ぎな栗原一貴のための緊急救済マニュアル。コインより低い選球眼を改善せよ。</div>
+          <div class="card-tags"><span class="tag">HeroesBingo</span><span class="tag">栗原向け</span><span class="tag">緊急救済</span></div>
           <span class="card-arrow">→</span>
-        </div>
+        </a>
+      </div>
+
+      <div class="section-title">
+        Protopedia 全数統計分析 <span class="badge">coming soon</span>
+      </div>
+      <div class="cards-grid">
+        <a class="card" href="protopedia-statistics.html" style="--card-color:#bc8cff">
+          <div class="card-icon">📊</div>
+          <div class="card-title">全数統計分析レポート</div>
+          <div class="card-desc">Protopedia全6,200作品を対象にした多角的統計分析。年代別トレンド・カテゴリー分布・人気素材など。</div>
+          <div class="card-tags"><span class="tag">全数調査</span><span class="tag">6200作品</span><span class="tag">Chart.js</span></div>
+          <span class="card-arrow">→</span>
+        </a>
+        <a class="card" href="protopedia-slideshow.html" style="--card-color:#f0b429">
+          <div class="card-icon">🎞️</div>
+          <div class="card-title">統計スライドショー</div>
+          <div class="card-desc">Protopedia全数統計の主要知見をスライド形式で紹介。プレゼン・共有向け。</div>
+          <div class="card-tags"><span class="tag">スライドショー</span><span class="tag">発表用</span></div>
+          <span class="card-arrow">→</span>
+        </a>
       </div>
 
       <footer>
@@ -545,6 +435,7 @@
           <strong>HeroesLeague Analysis Portal</strong><br>
           <a href="https://heroes-league.net/" target="_blank" rel="noopener">ヒーローズ・リーグ</a> の過去受賞作品を
           <a href="https://protopedia.net/prototype/8454" target="_blank" rel="noopener">protopedia-mcp</a> で分析したレポート集<br>
+          この分析は <strong>Claude（Anthropic）</strong> を用いて行いました。<br>
           <br>
           Crafted by <a href="https://www.unryu.org" target="_blank" rel="noopener">栗原一貴</a>
           &nbsp;·&nbsp;
@@ -552,30 +443,10 @@
         </div>
       </footer>
     </div>
-
-    <!-- Reader View -->
-    <div id="reader-view">
-      <div class="reader-header">
-        <button class="back-btn" onclick="showHome()">← 戻る</button>
-        <div class="reader-title-area">
-          <div class="reader-title" id="reader-title"></div>
-          <div class="reader-subtitle" id="reader-subtitle"></div>
-        </div>
-      </div>
-      <div class="md-body" id="md-content">
-        <div class="loading"><div class="spinner"></div>読み込み中...</div>
-      </div>
-      <footer style="margin-top:40px;">
-        <a href="https://www.unryu.org" target="_blank" rel="noopener">栗原一貴</a> ·
-        <a href="https://github.com/qurihara/HeroesLeague-analysis" target="_blank" rel="noopener">GitHub</a>
-      </footer>
-    </div>
-
   </main>
 </div>
 
 <script>
-  // Sidebar
   function toggleSidebar() {
     document.getElementById('sidebar').classList.toggle('open');
     document.getElementById('overlay').classList.toggle('show');
@@ -584,57 +455,6 @@
     document.getElementById('sidebar').classList.remove('open');
     document.getElementById('overlay').classList.remove('show');
   }
-
-  // Navigation state
-  let currentBtn = document.getElementById('nav-home');
-
-  function setActive(btn) {
-    document.querySelectorAll('.sidebar-link').forEach(b => b.classList.remove('active'));
-    if (btn) { btn.classList.add('active'); currentBtn = btn; }
-  }
-
-  // Show home
-  function showHome(btn) {
-    document.getElementById('home-view').style.display = '';
-    document.getElementById('reader-view').style.display = 'none';
-    setActive(document.getElementById('nav-home'));
-    closeSidebar();
-    window.scrollTo(0, 0);
-    history.pushState({}, '', '#');
-  }
-
-  // Load and render markdown
-  async function loadDoc(file, title, btn) {
-    document.getElementById('home-view').style.display = 'none';
-    document.getElementById('reader-view').style.display = '';
-    document.getElementById('reader-title').textContent = title;
-    document.getElementById('reader-subtitle').textContent = file;
-    document.getElementById('md-content').innerHTML =
-      '<div class="loading"><div class="spinner"></div>読み込み中...</div>';
-    setActive(btn || null);
-    closeSidebar();
-    window.scrollTo(0, 0);
-    history.pushState({ file, title }, '', '#' + file.replace('.md',''));
-
-    try {
-      const res = await fetch(file);
-      if (!res.ok) throw new Error(res.status);
-      const text = await res.text();
-      document.getElementById('md-content').innerHTML = marked.parse(text);
-    } catch (e) {
-      document.getElementById('md-content').innerHTML =
-        `<p style="color:var(--red)">ファイルの読み込みに失敗しました: ${file}</p>`;
-    }
-  }
-
-  // Handle browser back/forward
-  window.addEventListener('popstate', () => {
-    const hash = location.hash.replace('#','');
-    if (!hash) showHome();
-  });
-
-  // Configure marked
-  marked.setOptions({ breaks: true, gfm: true });
 </script>
 </body>
 </html>
