@@ -103,17 +103,40 @@ footer a:hover{text-decoration:underline;}
   </footer>
 </div>`;
 
+    /* 見出しIDをGitHub流で生成：日本語を保持しつつ記号類を除去 */
+    function slugify(text) {
+      return text
+        .replace(/[^\p{L}\p{N}\s-]/gu, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-')
+        .replace(/^-+|-+$/g, '');
+    }
+
     const markedScript = document.createElement('script');
     markedScript.src = 'https://cdn.jsdelivr.net/npm/marked/marked.min.js';
     markedScript.onload = async () => {
-      marked.setOptions({ breaks: true, gfm: true });
+      marked.use({ breaks: true, gfm: true });
       try {
         const res  = await fetch(mdFile);
         if (!res.ok) throw new Error(res.status);
         const text = await res.text();
-        document.getElementById('md-area').innerHTML = marked.parse(text);
-        const h1 = document.querySelector('#md-area h1');
+        const area = document.getElementById('md-area');
+        area.innerHTML = marked.parse(text);
+
+        /* 見出しにIDを付与（日本語対応） */
+        area.querySelectorAll('h1,h2,h3,h4,h5,h6').forEach(h => {
+          h.id = slugify(h.textContent);
+        });
+
+        const h1 = area.querySelector('h1');
         if (h1) document.title = h1.textContent + ' | HeroesLeague Analysis';
+
+        /* 非同期描画後にハッシュ位置へスクロール */
+        if (location.hash) {
+          const id = decodeURIComponent(location.hash.slice(1));
+          const target = document.getElementById(id);
+          if (target) setTimeout(() => target.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80);
+        }
       } catch (e) {
         document.getElementById('md-area').innerHTML =
           `<p style="color:#f85149">ファイルの読み込みに失敗しました: ${mdFile} (${e})</p>`;
