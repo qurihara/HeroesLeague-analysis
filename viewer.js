@@ -81,6 +81,16 @@ footer a:hover{text-decoration:underline;}
   faviconLink.href = 'favicon.svg';
   document.head.appendChild(faviconLink);
 
+  /* ── Google Analytics ─────────────────────────────────────────── */
+  const gtagScript = document.createElement('script');
+  gtagScript.async = true;
+  gtagScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-KYFWPQ97ME';
+  document.head.appendChild(gtagScript);
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-KYFWPQ97ME');
+
   /* ── Determine MD file from current HTML filename ─────────────── */
   const htmlFile = location.pathname.split('/').pop() || 'index.html';
   const mdFile   = htmlFile.replace(/\.html?$/, '.md');
