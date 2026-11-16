@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Protopedia 全数統計分析 | HeroesLeague Analysis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root{--bg:#0d1117;--bg2:#161b22;--bg3:#21262d;--border:#30363d;--accent:#f0b429;--text:#e6edf3;--text2:#8b949e;--text3:#6e7681;--blue:#58a6ff;--purple:#bc8cff;--green:#3fb950;--red:#f85149;--nav-h:60px;--radius:10px;}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans JP','Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.7;}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;height:var(--nav-h);background:rgba(13,17,23,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;padding:0 28px;}
+.nav-back{display:flex;align-items:center;gap:6px;background:var(--bg2);border:1px solid var(--border);color:var(--text2);padding:7px 14px;border-radius:8px;cursor:pointer;font-size:13px;text-decoration:none;transition:all .2s;}
+.nav-back:hover{border-color:var(--accent);color:var(--accent);}
+.nav-title{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:700;color:var(--text);}
+.nav-spacer{flex:1;}
+.nav-credit{font-size:12px;color:var(--text3);}
+.nav-credit a{color:var(--text2);text-decoration:none;}
+.nav-credit a:hover{color:var(--accent);}
+.page-wrap{max-width:1100px;margin:0 auto;padding:calc(var(--nav-h)+40px) 40px 80px;}
+h1{font-size:32px;font-weight:700;margin:0 0 8px;color:var(--text);line-height:1.2;}
+.subtitle{font-size:15px;color:var(--text2);margin-bottom:8px;}
+.hero-desc{font-size:13px;color:var(--text3);margin-bottom:48px;padding:16px 20px;background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:16px;margin-bottom:48px;}
+.kpi-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:20px;text-align:center;}
+.kpi-val{font-size:28px;font-weight:700;color:var(--accent);line-height:1.1;margin-bottom:4px;}
+.kpi-label{font-size:12px;color:var(--text3);}
+.section{margin-bottom:56px;}
+.section-title{font-size:20px;font-weight:700;margin-bottom:20px;padding-bottom:10px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.section-title .num{font-size:13px;color:var(--accent);font-weight:700;background:rgba(240,180,41,0.1);padding:2px 10px;border-radius:12px;border:1px solid rgba(240,180,41,0.3);}
+.chart-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(460px,1fr));gap:24px;margin-bottom:32px;}
+.chart-box{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:24px;}
+.chart-box h3{font-size:14px;font-weight:700;color:var(--text);margin-bottom:16px;}
+.chart-box canvas{width:100%!important;}
+.chart-wide{grid-column:1/-1;}
+.insight{background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--blue);border-radius:0 8px 8px 0;padding:14px 18px;margin:16px 0;font-size:13px;color:var(--text2);}
+.insight strong{color:var(--text);}
+table{width:100%;border-collapse:collapse;font-size:13px;margin:16px 0;}
+th{background:var(--bg3);color:var(--text);padding:10px 14px;text-align:left;border:1px solid var(--border);font-weight:600;}
+td{padding:9px 14px;border:1px solid var(--border);color:var(--text2);vertical-align:top;}
+tr:nth-child(even) td{background:rgba(255,255,255,0.02);}
+tr:hover td{background:rgba(255,255,255,0.04);}
+.rank{color:var(--accent);font-weight:700;}
+.bar-inline{display:inline-block;height:8px;background:var(--accent);border-radius:4px;margin-left:8px;opacity:0.7;vertical-align:middle;}
+footer{margin-top:48px;padding-top:24px;border-top:1px solid var(--border);text-align:center;font-size:12px;color:var(--text3);line-height:2;}
+footer a{color:var(--accent);text-decoration:none;}
+@media(max-width:768px){.page-wrap{padding:calc(var(--nav-h)+24px) 20px 60px;}.chart-grid{grid-template-columns:1fr;}.kpi-grid{grid-template-columns:repeat(2,1fr);}h1{font-size:24px;}}
+</style>
+</head>
+<body>
+<nav>
+  <a class="nav-back" href="index.html">← ポータル</a>
+  <div class="nav-title"><span>📊</span>Protopedia 全数統計分析</div>
+  <div class="nav-spacer"></div>
+  <div class="nav-credit">by <a href="https://www.unryu.org" target="_blank" rel="noopener">栗原一貴</a></div>
+</nav>
+
+<div class="page-wrap">
+  <h1>📊 Protopedia 全数統計分析レポート</h1>
+  <div class="subtitle">6,201作品・全データを多角的に読み解く（2014〜2026年）</div>
+  <div class="hero-desc">
+    Protopediaに登録された全作品（計<strong>6,201件</strong>）を protopedia-mcp で一括取得した完全な<strong>全数調査</strong>です。サンプリングなしで、プラットフォームの成長・技術トレンド・エンゲージメントを多角的に分析しています。
+  </div>
+
+  <!-- KPIs -->
+  <div class="kpi-grid">
+    <div class="kpi-card"><div class="kpi-val">6,201</div><div class="kpi-label">総作品数</div></div>
+    <div class="kpi-card"><div class="kpi-val">3,144</div><div class="kpi-label">ユニーク投稿者数</div></div>
+    <div class="kpi-card"><div class="kpi-val">4.43M</div><div class="kpi-label">累計閲覧数</div></div>
+    <div class="kpi-card"><div class="kpi-val">714.6</div><div class="kpi-label">平均閲覧数/作品</div></div>
+    <div class="kpi-card"><div class="kpi-val">21,460</div><div class="kpi-label">累計いいね数</div></div>
+    <div class="kpi-card"><div class="kpi-val">56.1%</div><div class="kpi-label">完成作品率</div></div>
+    <div class="kpi-card"><div class="kpi-val">1,747</div><div class="kpi-label">HL参加作品数</div></div>
+    <div class="kpi-card"><div class="kpi-val">81.3%</div><div class="kpi-label">ソロ制作率</div></div>
+  </div>
+
+  <!-- Section 1: Growth -->
+  <div class="section">
+    <div class="section-title"><span>1</span> 年度別成長トレンド <span class="num">2014〜2026</span></div>
+    <div class="chart-grid">
+      <div class="chart-box chart-wide">
+        <h3>年度別作品数の推移</h3>
+        <canvas id="chartYearWorks" height="80"></canvas>
+      </div>
+      <div class="chart-box">
+        <h3>年度別 平均閲覧数の推移</h3>
+        <canvas id="chartYearViews" height="160"></canvas>
+      </div>
+      <div class="chart-box">
+        <h3>ステータス分布</h3>
+        <canvas id="chartStatus" height="160"></canvas>
+      </div>
+    </div>
+    <div class="insight"><strong>2021年が最大の成長年：</strong>前年比+50%（448→672件）。M5Stack Japan Creativity Contest 2021・toio Do!コンの同時開催が引き金となった。</div>
+    <div class="insight"><strong>2024年が過去最高：</strong>891件。継続的な成長の頂点であり、ヒーローズ・リーグ（292件）・M5Stackコンテスト（202件）が牽引。</div>
+    <div class="insight"><strong>閲覧数の全盛期は2020〜2022年：</strong>コロナ禍でオンライン情報消費が急増。平均1,000〜1,300回/作品に達した。2023年以降は作品数増加で相対的に低下。</div>
+  </div>
+
+  <!-- Section 2: Materials -->
+  <div class="section">
+    <div class="section-title"><span>2</span> 人気素材ランキング <span class="num">TOP 20</span></div>
+    <div class="chart-grid">
+      <div class="chart-box chart-wide">
+        <h3>TOP 20 使用素材（全期間）</h3>
+        <canvas id="chartMaterials" height="70"></canvas>
+      </div>
+    </div>
+    <table>
+      <tr><th>順位</th><th>素材名</th><th>件数</th><th>シェア</th></tr>
+      <tr><td class="rank">1</td><td>M5Stack</td><td>626</td><td><span class="bar-inline" style="width:100px"></span></td></tr>
+      <tr><td class="rank">2</td><td>Arduino</td><td>493</td><td><span class="bar-inline" style="width:79px"></span></td></tr>
+      <tr><td class="rank">3</td><td>Unity</td><td>424</td><td><span class="bar-inline" style="width:68px"></span></td></tr>
+      <tr><td class="rank">4</td><td>LINE Messaging API</td><td>395</td><td><span class="bar-inline" style="width:63px"></span></td></tr>
+      <tr><td class="rank">5</td><td>Raspberry Pi</td><td>276</td><td><span class="bar-inline" style="width:44px"></span></td></tr>
+      <tr><td class="rank">6</td><td>Arduino IDE</td><td>265</td><td><span class="bar-inline" style="width:42px"></span></td></tr>
+      <tr><td class="rank">7</td><td>obniz</td><td>204</td><td><span class="bar-inline" style="width:33px"></span></td></tr>
+      <tr><td class="rank">8</td><td>kintone</td><td>202</td><td><span class="bar-inline" style="width:32px"></span></td></tr>
+      <tr><td class="rank">9</td><td>Twilio</td><td>181</td><td><span class="bar-inline" style="width:29px"></span></td></tr>
+      <tr><td class="rank">10</td><td>3Dプリンター</td><td>171</td><td><span class="bar-inline" style="width:27px"></span></td></tr>
+    </table>
+    <div class="insight"><strong>M5Stackが10年の総合1位：</strong>2020年から急台頭し、2021〜2024年は年間TOP1を維持。コンパクト・スクリーン付き・Arduino IDEで書けるという三拍子が普及を加速させた。</div>
+  </div>
+
+  <!-- Section 3: AI Trend -->
+  <div class="section">
+    <div class="section-title"><span>3</span> AI関連作品の爆発的増加 <span class="num">2014〜2026</span></div>
+    <div class="chart-grid">
+      <div class="chart-box chart-wide">
+        <h3>AI関連作品の割合推移（%）</h3>
+        <canvas id="chartAI" height="80"></canvas>
+      </div>
+    </div>
+    <div class="insight"><strong>2023年が転換点：</strong>ChatGPT API登場（2023年3月）を受け、AI関連作品が全体の18.8%に急増。2024〜2025年もこの水準を維持しており、「AIを使う」ことが普通になった。</div>
+    <div class="insight"><strong>2021年の前駆的上昇：</strong>12.4%に達したのは機械学習・TensorFlow系の台頭によるもの。その後2022年は反動減、2023年にChatGPTで再爆発。</div>
+  </div>
+
+  <!-- Section 4: Team -->
+  <div class="section">
+    <div class="section-title"><span>4</span> 制作スタイル・チーム構成</div>
+    <div class="chart-grid">
+      <div class="chart-box">
+        <h3>チーム規模の分布</h3>
+        <canvas id="chartTeam" height="200"></canvas>
+      </div>
+      <div class="chart-box">
+        <h3>イベント参加数の分布</h3>
+        <canvas id="chartEvents" height="200"></canvas>
+      </div>
+    </div>
+    <div class="insight"><strong>81.3%がソロ制作：</strong>Protopediaは「チームハッカソン記録」より「個人のつくってみた記録」として機能している。SNSに近いカルチャー。</div>
+  </div>
+
+  <!-- Section 5: Hall of Fame -->
+  <div class="section">
+    <div class="section-title"><span>5</span> 殿堂入り作品</div>
+    <table>
+      <tr><th>順位</th><th>作品名</th><th>閲覧数</th><th>年</th></tr>
+      <tr><td class="rank">🥇</td><td><strong>スタックチャン（Stack-chan）</strong></td><td>126,734</td><td>2021</td></tr>
+      <tr><td class="rank">🥈</td><td>ZOOMKEEPER〜カウントダウンできるバーチャル背景〜</td><td>46,994</td><td>2020</td></tr>
+      <tr><td class="rank">🥉</td><td>全国湧き水マップ</td><td>30,946</td><td>2020</td></tr>
+      <tr><td class="rank">4</td><td>えーるレター</td><td>29,018</td><td>2022</td></tr>
+      <tr><td class="rank">5</td><td>うちパレ</td><td>27,769</td><td>2021</td></tr>
+    </table>
+    <table>
+      <tr><th>順位</th><th>作品名（いいね数）</th><th>いいね</th><th>年</th></tr>
+      <tr><td class="rank">🥇</td><td><strong>AIで手話を認識するアプリ〜JSL〜</strong></td><td>436</td><td>2023</td></tr>
+      <tr><td class="rank">🥈</td><td>スタックチャン（Stack-chan）</td><td>97</td><td>2021</td></tr>
+      <tr><td class="rank">🥉</td><td>誰でも簡単！ライブに参加できるゆる楽器</td><td>55</td><td>2021</td></tr>
+      <tr><td class="rank">4</td><td>Type-C 危機一発</td><td>50</td><td>2023</td></tr>
+      <tr><td class="rank">5</td><td>論理演算式コントローラー</td><td>47</td><td>2022</td></tr>
+    </table>
+  </div>
+
+  <!-- Section 6: Events -->
+  <div class="section">
+    <div class="section-title"><span>6</span> 主要イベント参加作品数</div>
+    <div class="chart-grid">
+      <div class="chart-box chart-wide">
+        <h3>イベント別 Protopedia登録作品数 TOP 12</h3>
+        <canvas id="chartEvents2" height="80"></canvas>
+      </div>
+    </div>
+    <div class="insight"><strong>ヒーローズ・リーグが断トツ：</strong>TOP12のうち7つがHLイベント。2024年の292件が単一イベント最大。全体の28%（1,747件）がHL参加作品であり、Protopediaの成長とHLの成長は不可分。</div>
+  </div>
+
+  <footer>
+    この分析は <strong>Claude（Anthropic）</strong> を用いて行いました。<br>
+    調査対象：Protopedia 全登録作品 6,201件（2014〜2026年）| データ取得：protopedia-mcp / 全数調査<br>
+    <a href="https://heroes-league.net/" target="_blank" rel="noopener">ヒーローズ・リーグ</a> ·
+    <a href="https://protopedia.net/prototype/8454" target="_blank" rel="noopener">protopedia-mcp</a> ·
+    <a href="https://github.com/qurihara/HeroesLeague-analysis" target="_blank" rel="noopener">GitHub</a> ·
+    Crafted by <a href="https://www.unryu.org" target="_blank" rel="noopener">栗原一貴</a>
+  </footer>
+</div>
+
+<script>
+const YEARS = [2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024,2025,2026];
+const WORKS = [130,227,203,336,344,353,448,672,658,823,891,816,300];
+const AVG_VIEWS = [281,449,524,391,635,516,1031,1302,1188,844,537,378,179];
+const AI_PCT = [0.8,6.2,9.4,8.0,6.7,5.7,2.5,12.4,10.5,18.8,17.5,16.2,13.0];
+
+const DARK = {color:'rgba(230,237,243,0.85)',grid:'rgba(48,54,61,0.8)',tick:'#8b949e'};
+const defaultOpts = {
+  responsive:true,
+  plugins:{legend:{labels:{color:DARK.color,font:{size:12}}}},
+  scales:{
+    x:{ticks:{color:DARK.tick},grid:{color:DARK.grid}},
+    y:{ticks:{color:DARK.tick},grid:{color:DARK.grid}}
+  }
+};
+
+// Chart 1: Year works bar
+new Chart(document.getElementById('chartYearWorks'), {
+  type:'bar',
+  data:{
+    labels: YEARS.map(String),
+    datasets:[{
+      label:'作品数',
+      data: WORKS,
+      backgroundColor: WORKS.map((_,i)=>i===10?'rgba(240,180,41,0.9)':'rgba(88,166,255,0.7)'),
+      borderColor: WORKS.map((_,i)=>i===10?'#f0b429':'#58a6ff'),
+      borderWidth:1
+    }]
+  },
+  options:{...defaultOpts,plugins:{...defaultOpts.plugins,legend:{display:false}}}
+});
+
+// Chart 2: Avg views line
+new Chart(document.getElementById('chartYearViews'), {
+  type:'line',
+  data:{
+    labels: YEARS.map(String),
+    datasets:[{
+      label:'平均閲覧数',
+      data: AVG_VIEWS,
+      borderColor:'#f0b429',
+      backgroundColor:'rgba(240,180,41,0.12)',
+      fill:true,
+      tension:0.3,
+      pointRadius:4,
+      pointBackgroundColor:'#f0b429'
+    }]
+  },
+  options:defaultOpts
+});
+
+// Chart 3: Status doughnut
+new Chart(document.getElementById('chartStatus'), {
+  type:'doughnut',
+  data:{
+    labels:['completed','developing','idea','memorial'],
+    datasets:[{
+      data:[3479,2190,422,110],
+      backgroundColor:['rgba(63,185,80,0.8)','rgba(88,166,255,0.8)','rgba(240,180,41,0.8)','rgba(110,118,129,0.8)'],
+      borderColor:['#3fb950','#58a6ff','#f0b429','#6e7681'],
+      borderWidth:1
+    }]
+  },
+  options:{responsive:true,plugins:{legend:{labels:{color:DARK.color,font:{size:12}}}}}
+});
+
+// Chart 4: Materials bar (horizontal)
+new Chart(document.getElementById('chartMaterials'), {
+  type:'bar',
+  data:{
+    labels:['M5Stack','Arduino','Unity','LINE API','Raspberry Pi','Arduino IDE','obniz','kintone','Twilio','3Dプリンター','p5.js','Azure','AWS','toio','ChatGPT API','Micro:bit','Fusion360','Google Maps','M5StickC+','ESP32'],
+    datasets:[{
+      label:'件数',
+      data:[626,493,424,395,276,265,204,202,181,171,159,154,152,146,138,130,126,112,112,108],
+      backgroundColor:'rgba(188,140,255,0.75)',
+      borderColor:'#bc8cff',
+      borderWidth:1
+    }]
+  },
+  options:{
+    indexAxis:'y',
+    responsive:true,
+    plugins:{legend:{display:false}},
+    scales:{
+      x:{ticks:{color:DARK.tick},grid:{color:DARK.grid}},
+      y:{ticks:{color:DARK.tick,font:{size:11}},grid:{color:DARK.grid}}
+    }
+  }
+});
+
+// Chart 5: AI trend
+new Chart(document.getElementById('chartAI'), {
+  type:'line',
+  data:{
+    labels: YEARS.map(String),
+    datasets:[{
+      label:'AI関連作品の割合(%)',
+      data: AI_PCT,
+      borderColor:'#f85149',
+      backgroundColor:'rgba(248,81,73,0.12)',
+      fill:true,
+      tension:0.3,
+      pointRadius:5,
+      pointBackgroundColor: AI_PCT.map((_,i)=>i>=9?'#f85149':'rgba(248,81,73,0.5)'),
+      pointRadius: AI_PCT.map((_,i)=>i>=9?7:4)
+    }]
+  },
+  options:{
+    ...defaultOpts,
+    scales:{
+      x:{ticks:{color:DARK.tick},grid:{color:DARK.grid}},
+      y:{ticks:{color:DARK.tick,callback:v=>v+'%'},grid:{color:DARK.grid},max:25}
+    }
+  }
+});
+
+// Chart 6: Team size
+new Chart(document.getElementById('chartTeam'), {
+  type:'doughnut',
+  data:{
+    labels:['ソロ(1人)','2人','3人','4人','5人以上'],
+    datasets:[{
+      data:[5043,493,281,221,159],
+      backgroundColor:['rgba(240,180,41,0.85)','rgba(88,166,255,0.75)','rgba(63,185,80,0.75)','rgba(188,140,255,0.75)','rgba(110,118,129,0.75)'],
+      borderColor:['#f0b429','#58a6ff','#3fb950','#bc8cff','#6e7681'],
+      borderWidth:1
+    }]
+  },
+  options:{responsive:true,plugins:{legend:{labels:{color:DARK.color,font:{size:12}}}}}
+});
+
+// Chart 7: Events per work
+new Chart(document.getElementById('chartEvents'), {
+  type:'bar',
+  data:{
+    labels:['0イベント','1イベント','2イベント','3イベント','4以上'],
+    datasets:[{
+      label:'作品数',
+      data:[2909,2330,668,173,121],
+      backgroundColor:['rgba(110,118,129,0.7)','rgba(88,166,255,0.8)','rgba(63,185,80,0.8)','rgba(240,180,41,0.8)','rgba(248,81,73,0.8)'],
+      borderWidth:1
+    }]
+  },
+  options:{...defaultOpts,plugins:{...defaultOpts.plugins,legend:{display:false}}}
+});
+
+// Chart 8: Events ranking
+new Chart(document.getElementById('chartEvents2'), {
+  type:'bar',
+  data:{
+    labels:['HL 2024','HL 2025','HL 2023','HL 2021','HL 2022','M5 2024','HL 2019','M5 2023','Human Impact','M5 2021','HL 2020','M5 2022'],
+    datasets:[{
+      label:'登録作品数',
+      data:[292,265,248,223,180,202,174,174,154,152,142,125],
+      backgroundColor: [0,1,2,3,4,5,6,7,8,9,10,11].map(i=>
+        [0,1,2,3,4,6,9,10].includes(i)?'rgba(240,180,41,0.8)':'rgba(88,166,255,0.7)'
+      ),
+      borderWidth:1
+    }]
+  },
+  options:{...defaultOpts,plugins:{...defaultOpts.plugins,legend:{display:false}}}
+});
+</script>
+</body>
+</html>
