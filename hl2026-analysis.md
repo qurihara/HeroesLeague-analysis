@@ -193,7 +193,7 @@
 | 予想を記録した日時（日本時間） | 2026年11月17日 7時04分 | 2026年11月17日 7時29分 |
 | 予想した賞の数 | 71賞（栗原賞を除く全賞） | 71賞（栗原賞を除く全賞） |
 | 予想の候補にした作品 | 公式 API で取得できる349件 | 公式 API で取得できる349件 |
-| 記録した時点のビットコインのブロック | 高さ976,189 | 高さ976,192 |
+| 記録した時点のビットコインの block height | 976,189 | 976,192 |
 | 時刻の証明（OpenTimestamps） | [hl2026_prediction_sonnet.md.ots](prediction/hl2026_prediction_sonnet.md.ots) | [hl2026_prediction_opus.md.ots](prediction/hl2026_prediction_opus.md.ots) |
 
 予想のファイルの SHA-256 は次のとおりです。
