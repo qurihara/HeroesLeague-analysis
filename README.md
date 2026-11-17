@@ -33,7 +33,7 @@
 
 | ファイル | 内容 |
 |---------|------|
-| [protopedia-statistics.md](protopedia-statistics.md) | Protopedia全6,201作品の全数統計分析レポート（多角的） |
+| [protopedia-statistics.md](protopedia-statistics.md) | ProtoPedia の公式 API で取得できる6,201作品（CC BY）の統計分析レポート（多角的） |
 | [protopedia-statistics.html](protopedia-statistics.html) | インタラクティブChart.js統計ページ |
 | [protopedia-slideshow.html](protopedia-slideshow.html) | 統計サマリースライドショー（10スライド） |
 | [protopedia-creators.md](protopedia-creators.md) | Protopedia著名クリエイター分析（3,144人・作品数/いいね/受賞数ランキング） |
